@@ -1,0 +1,471 @@
+pom.xml 버전 수정
+		=> <version>2.7.4</version>로 수정
+		   <java.version>12</java.version>로 수정
+			
+			
+			
+		=> 자동 빌드
+		
+Problems 탭 > 에러소스 우클릭 > Quick Fix 클릭>  -> 엑박 사라진다.
+
+크래도 오류시 플젝 우클릭 > properties > Java Build Path에서 jre1.12확인 / java Compiler에서 Java1.12확인
+/Product Facets에서 Java1.12 확인
+pom.xml에서 ㅓㅁㅍㅁ1.12 확인 / <version>2.7.4</version>확인
+
+
+** 빌드가 자동으로 안되는 경우 =>
+pom.xml에서 버전 2.7.4로 바꾼후 플젝 우클릭 > Maven > Update Project 선택
+
+<!-- 마이바티스 2.3.1 -->
+Caused by: java.lang.UnsupportedClassVersionError: org/mybatis/spring/boot/autoconfigure/MybatisLanguageDriverAutoConfiguration has been compiled by a more recent version of the Java Runtime (class file version 61.0), this version of the Java Runtime only recognizes class file versions up to 56.0
+<dependency>
+	<groupId>org.mybatis.spring.boot</groupId>
+	<artifactId>mybatis-spring-boot-starter</artifactId>
+	<version>2.3.1</version>
+</dependency> <!--3.0.3 에러 -->
+		
+===============================================================================================
+
+스프링부트 
+- 스프링프레임워크를 사용가능한 상태로 만들어주는 도구(아이콘: 전원)
+- 스프링프레임워크보다 의존성 관리가 용이하다. 배포 또는 테스트가 빠르다.
+- 특징
+   . 일반적인 응용 프로그램을 단독으로 수행하는 수준으로 스프링 애플리케이션을 구현 가능
+   . 톰캣 내장
+   . XML 기반 설정이나 코드없이 환경설정 자동화가능
+   . 의존성 관리를 쉽게 자동화 가능
+
+마이바티스
+- MyBatis는 XML 파일에 작성한 SQL을 자바객체(VO)와 매핑해주는 데이터 매퍼 프레임워크다.
+
+JPA(Java Persistent API)
+- 하이버네이트를 비롯한 모든 ORM(Object Relation Mapping) 프레임워크의 표준이다. 
+
+** 빌드가 자동으로 안되는 경우 =>
+pom.xml에서 버전 2.7.4로 바꾼후 플젝 우클릭 > Maven > Update Project 선택
+
+**************
+실행시 버전 오류  **
+**************
+Exception in thread "main" java.lang.UnsupportedClassVersionError: 
+org/springframework/boot/SpringApplication has been compiled by a more recent version of the Java Runtime 
+(class file version 61.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+
+=> pom.xm. 버전 수정(3.0.5 -> 2.7.4)
+<parent> 
+ <version>3.0.5</version>    
+</parent>
+
+<parent> 
+ <version>2.7.4</version>   
+</parent>
+
+=> java 버전(17-> 11)
+<properties>
+      <java.version>11</java.version>
+   </properties>
+
+//////////////////////////////////////////////
+
+주의 :
+[ 1. 프로젝트 생성 ]
+[ 2. pom.xml ]
+[ 3. application.properties ]  
+[ 4. ProductDTO.java ]
+[ 5. controller > ProductController 작성 - view페이지 : jsp(html 아니고) ]
+[ 6. jsp 작성(현재 : src > main) ]
+
+   경로 추가 : src/main 하위에 > webapp > WEB-INF > views > product > jsp 작성
+
+
+
+//////////////////////////////////////////////
+0. 테이블 생성
+
+mybatis_ict02 계정에서 작업
+
+DROP TABLE mvc_sample_tbl CASCADE CONSTRAINTS;
+CREATE TABLE mvc_sample_tbl(
+   id      number(5)    PRIMARY KEY,
+   name    varchar2(50) NOT NULL,
+   brand   varchar2(50) NOT NULL,
+   madein  varchar2(50) NOT NULL,
+   price   number(9)    NOT NULL
+);
+
+SELECT * FROM mvc_sample_tbl;
+
+-----------------------------------------------------
+[ 1-1. 프로젝트 생성 ]
+New > Spring Starter Project 
+> Name : springBoot_basic_1
+ Type: Maven
+ Java Version: 11
+> Dependencies 추가
+  SQL : JDBC API  
+  SQL : Spirng Data JPA 
+  SQL : Oracle Driver
+  SQL : MyBatis Framework
+  Web : Spring Web
+  Template Engine : Thymeleaf  => 선택안함
+  
+> Finish   
+  버전 오류 해결 -> Problems 탭 > Errors  소스 우클릭 > Quick Fix 
+  
+
+[ 1-2. 플젝명 - 우클릭 > Properties > ] 
+   Java Build Path : jre1.11.xx
+   compiler : 1.11
+   project Facets : 1.11
+   
+   
+   실행 => 메인메서드클래스 우클릭 > Run As > Run On Server > Spring Boot App 선택 > spring boot 로그 떠야함 
+  크롬창에서 localhost:8081 직접 실행
+  => 오류.. 매퍼, dao 작성안함
+  
+-----------------------------------------------------
+[ 2. pom.xml - 버전 체크 ]   롬복, devtools 추가
+
+    <parent>
+       <version>2.7.4</version>
+    </parent>
+   <properties>
+      <java.version>11</java.version>
+   </properties>
+   
+   <!-- 플젝 생성시 자동추가 : 주의사항 => jstl, tomcat 반드시 추가 -->
+
+   <!-- devtools : 자동으로 어플리케이션 재시작  -->
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+   </dependency>
+         
+   <!-- jpa -->
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+   </dependency>
+      
+   <!-- 스프링 부트용 jdbc 라이브러리 -->
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+   </dependency>
+   
+   <!-- 필수추가해야 함 (미추가시 @RequestMapping, ModelAndView를 인식못함)  -->
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+   </dependency>
+   
+   <!-- 마이바티스 -->
+   <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>2.3.1</version>  <!-- 버전주의 => 자동으로 설정해준 버전을 사용(강제로 버전을 바꾸지 않는다.) -->
+   </dependency>
+
+   <!-- 오라클 -->
+   <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <scope>runtime</scope>
+   </dependency>
+   
+   <!-- 직접추가함 : 타임리프 대신 JSP사용, 2개  dependency 누락시 작동안됨 -->
+   <!-- Servlet -->
+   <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+   </dependency>
+
+   <!-- 톰캣 -->
+    <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-jasper</artifactId>
+    </dependency> 
+   <!-- 타임리프 대신 JSP -->
+   
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+   </dependency>
+</dependencies>
+
+---------------------------------------------------
+
+[ 3. application.properties ]
+주의사항 => mybatis, dao 경로 주의 / 커넥션 정보 주의 / jsp 주석처리
+
+# db connection(oracle) - spring(context.xml)
+spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe
+spring.datasource.username=mybatis_ict02
+spring.datasource.password=oracle
+
+
+# JPA SQL SHOW
+spring.jpa.database-platform=org.hibernate.dialect.Oracle12cDialect
+spring.jpa.show-sql=true
+
+# http port number(default 8080)
+server.port=8081
+
+# jsp - spring(servlet-context.xml)
+#spring.mvc.view.prefix=/WEB-INF/views/
+#spring.mvc.view.suffix=.jsp
+#server.jsp-servlet.init-parameters.development=true
+# spring.devtools.livereload.enabled: true
+
+# custom error page
+server.error.whitelabel.enabled=false    
+
+# MyBatis - spring(dataSource-config.xml)
+mybatis.mapper-locations=mappers/**/*.xml
+mybatis.type-aliases-package=경로.dao
+mybatis.configuration.map-underscore-to-camel-case=true
+logging.level.com.atoz_develop.mybatissample.repository=TRACE
+
+-----------------------------------------------------
+----------------------------------[ Product 직접 구현 시작 ] ---------------------------------------
+4. SampleDTO.java
+
+﻿// JPA가 추가되어야 @Entity, @Table import 가능
+
+package com.example.springBoot_basic_1.dto;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity    
+@Table(name="mvc_sample_tbl")
+public class ProductDTO {
+   
+   private int id;
+   private String name;
+   private String brand;
+   private String madein;
+   private int price;
+   
+   
+   // @GeneratedValue(strategy=GenerationType.IDENTITY)  // PK(id)를 AUTO_INCREMENT로 생성한 경우
+   @Id
+   public int getId() {
+      return id;
+   }
+   
+   public void setId(int id) {
+      this.id = id;
+   }
+   
+   public String getName() {
+      return name;
+   }
+   
+   public void setName(String name) {
+      this.name = name;
+   }
+   
+   public String getBrand() {
+      return brand;
+   }
+   
+   public void setBrand(String brand) {
+      this.brand = brand;
+   }
+   
+   public String getMadein() {
+      return madein;
+   }
+   
+   public void setMadein(String madein) {
+      this.madein = madein;
+   }
+   
+   public int getPrice() {
+      return price;
+   }
+   
+   public void setPrice(int price) {
+      this.price = price;
+   }
+
+}
+
+--------------------------------------------
+5. ProductController.java
+
+@RestController
+@RequestMapping(value="/samples")
+public class SampleController {
+
+	@Autowired
+	private SampleServiceImpl service;
+	
+	private static final Logger logger = LoggerFactory.getLogger(SampleController.class);
+	
+	// http://localhost:8081/samples
+	// List
+	@GetMapping
+	public List<SampleDTO> sampleList(HttpServletRequest req, HttpServletResponse res, Model model)
+			throws ServletException, IOException {
+			logger.info("<<< url - sampleList >>>");
+		
+			return service.listAll();
+	}
+	
+
+
+6. ProductServiceImpl.java
+@Service
+public class SampleServiceImpl implements SampleService {
+
+	@Autowired
+	private SampleMapper dao;
+	
+	// 상품목록
+	@Override
+	public List<SampleDTO> listAll() throws ServletException, IOException {
+		System.out.println("서비스 - listAll");
+		
+		List<SampleDTO> list = dao.sampleList();
+		System.out.println("list : " + list);
+		return list;
+	}
+
+	// 상품등록
+	@Override
+	public int insertSample(SampleDTO dto) throws ServletException, IOException {
+		System.out.println("서비스 - insertSample");
+		return 0;
+	}
+
+	// 상품수정
+	@Override
+	public int updateSample(SampleDTO dto) throws ServletException, IOException {
+		System.out.println("서비스 - updateSample");
+		return 0;
+	}
+	
+	// 상품삭제
+	@Override
+	public int deleteSample(int id) throws ServletException, IOException {
+		System.out.println("서비스 - deleteSample");
+		return 0;
+	}
+
+	// 상품상세페이지
+	@Override
+	public SampleDTO findById(int id) throws ServletException, IOException {
+		System.out.println("서비스 - findById");
+		return null;
+	}
+
+	
+}
+
+	
+7. ProductDAO.java
+
+@Repository
+public class ProductDAOImpl implements ProductDAO {
+
+	@Autowired
+	private SqlSession sqlSession;
+	
+	@Override
+	public List<ProductDTO> productList() {
+		System.out.println("ProductDAOImpl - productList()");
+		sqlSession.selectList("com.example.springBoot_basic_1.dao.ProductDAO.productList");
+		
+		return null;
+	}
+
+	@Override
+	public int insertProduct(ProductDTO dto) {
+		return 0;
+	}
+
+	@Override
+	public int updateProduct(ProductDTO dto) {
+		return 0;
+	}
+
+	@Override
+	public int deleteProduct(int id) {
+		return 0;
+	}
+
+	@Override
+	public ProductDTO selectProduct(int id) {
+		return null;
+	}
+
+
+
+8. 	sampleMapper.xml
+
+@Mapper // => DAOImple 작성하지 않아도 mapper 호출가능
+public interface SampleMapper {
+
+	
+	// 상품목록
+	public List<SampleDTO> sampleList();
+	
+	// 상품등록
+	public int insertSample(SampleDTO dto);
+	
+	// 상품수정
+	public int updateSample(SampleDTO dto);
+	
+	// 상품삭제
+	public int deleteSample(int id);
+	
+	// 상품상세페이지
+	public SampleDTO findById(int id);
+	
+}
+
+[ 실행결과 ] 
+
+// http://localhost:8081/samples
+[{"id":1,"name":"냉장고","brand":"lg","madein":"한국","price":1000},{"id":2,"name":"홍길동","brand":"삼성","madein":"코리아","price":2000},{"id":3,"name":"tv","brand":"삼성","madein":"한국","price":100000},{"id":4,"name":"핸드폰","brand":"서울","madein":"서울","price":1111},{"id":5,"name":"rr234","brand":"rr234","madein":"rr","price":11}]
+
+
+9. 리액트
+비주얼 스튜디오 open
+open folder > springBoot_react_oracle_ict02 프로젝트 선택
+
+9-1 front-end 플젝생성
+ Terminal > new Terminal > Command Prompt 선택
+
+9-2. 해당 폴더로 이동
+Creating a new React app in D:\dev\workspace-spring\springBoot_react_oracle_ict02\front-end.
+
+9-3. 실행
+npm start =>  로고가 뜨면 ok (http://localhost:3000/)
+
+9-4. 비주얼 스튜디오 코드의 스프링부트 플젝안에 front-end 리액트 폴더가 생기고 
+나머지 주석 => 리액트 read SUMMARY.md
+
+10. 이클립스에 
+ 	리액트 폴더(front-end)가 생긴다.
+ 	
+
+----------------------------------[ Product 직접 구현 완료 ] ---------------------------------------
+
+----------------------------------[ Board 시작 ] ---------------------------------------
+Spring_pj_ict02 프로젝트에서 board 소스 가져와서 붙여넣고 패키지 수정 
+주의 :
+ - 매퍼 경로 수정
+ - mvc_board_tbl, mvc_comment_tbl 테이블 생성(show 컬럼 alter)
+ 
+메인 메서드 클래스
+SpringBootBasic1Application.java > 우클릭 > run as > spring boot application
+http://localhost:8081/board_list.bc => 실행
