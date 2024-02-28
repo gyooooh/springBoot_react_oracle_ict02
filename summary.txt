@@ -1,3 +1,22 @@
+
+1. API 연동의 기본
+
+axios를 사용해서 GET(SELECT), PUT(EDIT), POST(INSERT), DELETE(DELETE) 등의 메서드로 API 요청을 할 수 있다.
+
+REST API 를 사용 할 때에는 하고 싶은 작업에 따라 다른 메서드로 요청을 할 수 있는데 메서드들은 다음 의미를 가지고 있습니다.
+
+GET: 데이터 조회
+POST: 데이터 등록
+PUT: 데이터 수정
+DELETE: 데이터 제거
+
+select : 리액트 axios.get => 스프링부트 @GetMapping
+insert : 리액트 axios.get => 스프링부트 @PostMapping
+update : 리액트 axios.put => 스프링부트 @PutMapping
+delete : 리액트 axios.delete => 스프링부트 @DeleteMapping
+
+axios.get => 스프링부트 @GetMapping
+/////////////////////////////////////////////////////////////////////////////
 pom.xml 버전 수정
 		=> <version>2.7.4</version>로 수정
 		   <java.version>12</java.version>로 수정
